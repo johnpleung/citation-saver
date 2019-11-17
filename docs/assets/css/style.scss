@@ -3,7 +3,11 @@
 
 @import "{{ site.theme }}";
 
-h1 {
+#downloads {
+    display: none;
+}
+
+h1#citation-saver {
     display: none;
 }
 
