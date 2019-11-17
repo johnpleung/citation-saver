@@ -1,3 +1,5 @@
+# Citation Saver
+
 ## What This Thing Does
 
 Citation Saver allows you to link directly back to content you highlight on a page--that way you can cite text on a page and return to it later.
