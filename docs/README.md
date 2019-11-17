@@ -4,6 +4,7 @@ Citation Saver allows you to link directly back to content you highlight on a pa
 
 This is not a link shortening service. We're not logging any of your page visits; the experience takes place entirely in your browser.
 
+
 ## How To Use This Thing
 
 1. Highlight some content on a page.
@@ -13,6 +14,7 @@ This is not a link shortening service. We're not logging any of your page visits
 3. Click "Get citation link."
 
 4. Click the provided Citation Saver link to copy it to your clipboard. Done! When you navigate to this link in the future
+
 
 ## How to Support This Thing
 
