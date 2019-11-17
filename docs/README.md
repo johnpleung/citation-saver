@@ -15,7 +15,7 @@ This is not a link shortening service. We're not logging any of your page visits
 
 3. Click "Get citation link."
 
-4. Click the provided Citation Saver link to copy it to your clipboard. Done! When you navigate to this link in the future
+4. Click the provided Citation Saver link to copy it to your clipboard. Done! When you navigate to this link in the future.
 
 
 ## How to Support This Thing
