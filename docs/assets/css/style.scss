@@ -11,6 +11,16 @@ h1#citation-saver {
     display: none;
 }
 
+ol, ul {
+	padding-left: 18px;
+	font-weight: 300;
+}
+
+ul li {
+	padding-left: 0;
+	line-height: 2em;
+}
+
 footer {
   display: none;
 }

@@ -29,7 +29,7 @@ There's an innocuous ad that appears when you create a Citation Saver link. Clic
 
 ## How To Report Problems With This Thing
 
-Please send an email to citationsaver@gmail.com with this information
+Found a bug? Help make Citation Saver better by reporting the issue to citationsaver@gmail.com. Please include the following information:
 - A description of the issue
 - The URL of the relevant page
 - The Citation Saver URL (if applicable)
