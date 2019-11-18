@@ -6,7 +6,7 @@ Citation Saver allows you to link directly back to content you highlight on a pa
 
 If you follow a Citation Saver link in another browser (or if you decide to uninstall Citation Saver), your link will still be valid and will take you to the same page; your browser just won't automatically highlight the citation.
 
-This is not a link shortening service. We're not logging any of your page visits; the experience takes place entirely in your browser.
+This is not a link shortening service. I'm not logging any of your page visits; the experience takes place entirely in your browser.
 <br>
 <br>
 
@@ -24,3 +24,17 @@ This is not a link shortening service. We're not logging any of your page visits
 ## How to Support This Thing
 
 There's an innocuous ad that appears when you create a Citation Saver link. Click it if you're so inclined!
+<br>
+<br>
+
+## How To Report Problems With This Thing
+
+Please send an email to citationsaver@gmail.com with this information
+- A description of the issue
+- The URL of the relevant page
+- The Citation Saver URL (if applicable)
+- The content you're trying to cite
+- The version of Chrome you're running
+- A screenshot (optional but helpful)
+
+Thank you!
