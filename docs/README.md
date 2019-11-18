@@ -20,7 +20,7 @@ This is not a link shortening service. I'm not logging any of your page visits; 
 
 4. Click the provided Citation Saver link to copy it to your clipboard. Done!
 <br>
-<br>
+
 ## How to Support This Thing
 
 There's an innocuous ad that appears when you create a Citation Saver link. Click it if you're so inclined!
