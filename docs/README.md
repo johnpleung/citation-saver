@@ -19,7 +19,7 @@ This is not a link shortening service. I'm not logging any of your page visits; 
 3. Click "Get citation link."
 
 4. Click the provided Citation Saver link to copy it to your clipboard. Done!
-<br>
+<br><br>
 ![alt text](./assets/img/screenshot.jpg "Citation Saver")
 <br>
 <br>
@@ -39,5 +39,3 @@ Found a bug? Help make Citation Saver better by reporting the issue to citations
 - The content you're trying to cite
 - The version of Chrome you're running
 - A screenshot (optional but helpful)
-
-Thank you!
