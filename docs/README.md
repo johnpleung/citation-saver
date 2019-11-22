@@ -24,12 +24,6 @@ This is not a link shortening service. I'm not logging any of your page visits; 
 <br>
 <br>
 
-## How to Support This Thing
-
-There's an innocuous ad that appears when you create a Citation Saver link. Click it if you're so inclined!
-<br>
-<br>
-
 ## How To Report Problems With This Thing
 
 Found a bug? Help make Citation Saver better by reporting the issue to citationsaver@gmail.com. Please include the following information:
@@ -39,6 +33,10 @@ Found a bug? Help make Citation Saver better by reporting the issue to citations
 - The content you're trying to cite
 - The version of Chrome you're running
 - A screenshot (optional but helpful)
+
+## How to Support This Thing
+
+There's an innocuous ad that appears when you create a Citation Saver link. Click it if you're so inclined!
 
 <br>
 <br>
