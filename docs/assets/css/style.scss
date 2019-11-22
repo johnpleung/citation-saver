@@ -3,6 +3,10 @@
 
 @import "{{ site.theme }}";
 
+.inner {
+    width: 728px;
+}
+
 #downloads {
     display: none;
 }
@@ -31,10 +35,13 @@ footer {
 
 .ad-unit {
     text-align: center;
+    max-width: 100%;
+    overflow: hidden;
 }
 .ad-unit div {
     font-size: 9px;
     text-transform: uppercase;
+    padding-bottom: .5em;
 }
 
 .ad-unit iframe {
