@@ -39,3 +39,7 @@ Found a bug? Help make Citation Saver better by reporting the issue to citations
 - The content you're trying to cite
 - The version of Chrome you're running
 - A screenshot (optional but helpful)
+
+<br>
+<br>
+<div class="ad-unit"><div>Advertisement</div><iframe src="https://johnpleung.github.io/citation-saver-ad/" frameborder="0"></iframe></div>

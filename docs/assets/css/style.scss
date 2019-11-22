@@ -28,3 +28,16 @@ footer {
 #container {
     padding-bottom: 50px;
 }
+
+.ad-unit {
+    text-align: center;
+}
+.ad-unit div {
+    font-size: 9px;
+    text-transform: uppercase;
+}
+
+.ad-unit iframe {
+    width: 728px;
+    height: 90px;
+}
