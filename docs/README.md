@@ -10,6 +10,13 @@ This is not a link shortening service. I'm not logging any of your page visits; 
 <br>
 <br>
 
+## How to Install This Thing
+
+Install it from the Chrome Web Store:
+https://chrome.google.com/webstore/detail/citation-saver/kkjfcmbefhilcekbiphpfmkihbligdef
+<br>
+<br>
+
 ## How To Use This Thing
 
 1. Highlight some content on a page.
