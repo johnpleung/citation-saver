@@ -12,8 +12,7 @@ This is not a link shortening service. I'm not logging any of your page visits; 
 
 ## How to Install This Thing
 
-Install it from the Chrome Web Store:
-https://chrome.google.com/webstore/detail/citation-saver/kkjfcmbefhilcekbiphpfmkihbligdef
+Install it from the [Chrome Web Store](https://chrome.google.com/webstore/detail/citation-saver/kkjfcmbefhilcekbiphpfmkihbligdef).
 <br>
 <br>
 
