@@ -1,0 +1,140 @@
+/*
+
+Color palette: ff8503, 8903ff, 03eeff
+
+*/
+
+#__citation-saver-modal-cover {
+    background-color: rgba(0, 0, 0, .8);
+    z-index: 9999999;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    opacity: 0;
+    transition: opacity .25s;
+}
+
+#__citation-saver-modal-cover.__citation-saver-show {
+    opacity: 1;
+}
+
+#__citation-saver-modal-main-content, #__citation-saver-modal-cover.__citation-saver-loaded #__citation-saver-modal-loading-content {
+    display: none;
+}
+
+#__citation-saver-modal-cover.__citation-saver-loaded #__citation-saver-modal-main-content {
+    display: block;
+}
+
+#__citation-saver-modal, #__citation-saver-notice {
+    /*background-color: #ff8503;*/
+    background: rgb(255,133,3);
+    background: linear-gradient(347deg, rgba(255,133,3,1) 0%, rgba(255,213,83,1) 100%);
+    border-radius: 4px;
+    padding: 20px;
+    font-size: 16px;
+    margin: auto;
+    text-align: center;
+    max-width: 70vw;
+    filter: drop-shadow(0 0 1em #000);
+}
+
+#__citation-saver-modal>*, #__citation-saver-notice>* {
+    color: #372918;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+    font-family: 'Open Sans', 'Roboto', 'Lato', 'Montserrat', 'Poppins', 'Raleway', Arial;
+}
+
+#__citation-saver-modal-loading-content, #__citation-saver-modal-logo {
+    opacity: 0;
+    transition: opacity 2s;
+}
+
+#__citation-saver-modal-cover.__citation-saver-show #__citation-saver-modal-loading-content, #__citation-saver-modal-cover.__citation-saver-show #__citation-saver-modal-logo {
+    opacity: 1;
+}
+
+#__citation-saver-modal-label-intro, #__citation-saver-modal-loading-content {
+    padding: 1em 0;
+}
+
+#__citation-saver-modal-logo {
+    width: 48px;
+    height: 48px;
+}
+
+#__citation-saver-modal-label-link {
+    background-color: #8903ff;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: 'courier new';
+    padding: 6px;
+    width: 710px;
+    max-width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color .5s, color .5s;
+    color: #fff;
+    margin: auto;
+}
+
+#__citation-saver-modal-label-link:hover, #__citation-saver-modal-label-link:focus {
+    background-color: #5903df;
+}
+
+#__citation-saver-modal-close {
+    background-color: #372918;
+    color: #fff;
+    font-size: 16px;
+    padding: .5em 1em;
+    display: inline-block;
+    margin-top: .75em;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color .5s;
+    border: 0;
+}
+
+#__citation-saver-modal-close:hover, #__citation-saver-modal-close:active {
+    background-color: #574938;
+}
+
+#__citation-saver-modal-ad-placeholder {
+    padding: 1.5em 0 0;
+    overflow: hidden;
+}
+
+#__citation-saver-modal-ad-title {
+    font-size: .7em;
+    text-transform: uppercase;
+    text-shadow: none;
+}
+
+#__citation-saver-modal-ad-unit {
+    margin-top: .7em;
+    width: 728px;
+    height: 90px;
+}
+
+#__citation-saver-notice-container {
+    position: fixed;
+    text-align: center;
+    top: -2em;
+    z-index: 99999;
+    opacity: 0;
+    transition: opacity .5s, top .5s;
+    width: 100vw;
+}
+
+#__citation-saver-notice-container.__citation-saver-show {
+    opacity: 1;
+    top: 1em;
+}
+
+#__citation-saver-notice {
+    display: inline-block;
+}
