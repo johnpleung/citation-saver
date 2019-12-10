@@ -1,6 +1,7 @@
 # Citation Saver
 
 <a href="https://www.producthunt.com/posts/citation-saver?utm_source=badge-featured&amp;utm_medium=badge&amp;utm_souce=badge-citation-saver" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=177061&amp;theme=light" alt="Citation Saver - Link directly back to content you highlight on a page. | Product Hunt Embed" style="width: 250px; height: 54px;" width="250px" height="54px" /></a>
+<br>
 
 ## What This Thing Does
 
@@ -29,14 +30,12 @@ Install it from the [Chrome Web Store](https://chrome.google.com/webstore/detail
 4. Click the provided Citation Saver link to copy it to your clipboard. Done!
 <br><br>
 ![alt text](./assets/img/screenshot.jpg "Citation Saver")
-
 <br>
 <br>
 
 ## How to Support This Thing
 
 There's an innocuous ad that appears when you create a Citation Saver link. Click it if you're so inclined!
-
 <br>
 <br>
 
