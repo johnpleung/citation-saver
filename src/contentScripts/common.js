@@ -254,7 +254,7 @@ const citationSaver = {
             try {
                 // Step 1: Find elements that contain the start and end phrases, regardless of the order in which the phrases appear
                 let excludedTags = 'HTML,HEAD,HEAD *,SCRIPT,STYLE,TEMPLATE';
-                let selector = `:not(${excludedTags})`;
+                let selector = `:not(${excludedTags}):visible`;
                 let searchFragments = [ profile.s, profile.e ];
                 if (profile.m) {
                     searchFragments.push(profile.m);
