@@ -1,5 +1,3 @@
-"use strict";
-
 const citationSaver = {
     config: {
         profile: {
@@ -9,9 +7,6 @@ const citationSaver = {
         modal: {
             introText: 'Here\'s your Citation Saver link! Click to copy to clipboard.',
             copiedConfirmation: 'Copied to clipboard.'
-        },
-        ad: {
-            url: 'https://johnpleung.github.io/citation-saver-ad/'
         }
     },
     utils: {
@@ -28,14 +23,9 @@ const citationSaver = {
                 } catch (err) {}
                 return false;
             },
-            copyToClipboard: str => { // Copies a string to the clipboard
+            copyToClipboard: async str => { // Copies a string to the clipboard
                 try {
-                    let el = document.createElement('textarea');
-                    el.value = str;
-                    document.body.appendChild(el);
-                    el.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(el);
+                    navigator.clipboard.writeText(str);
                     return true;
                 } catch (err) {}
                 return false;
@@ -66,15 +56,12 @@ const citationSaver = {
         escapeRegEx: str => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), // Escapes chars that interfere with regex's
         toggleTextTransform: enable => { // Toggles text-transform
             if (!enable) {
-                let $styleTag;
-                $styleTag = jQuery(`
-                <style id="citation-saver-disable-text-transform">
-                    * {
-                        text-transform: none!important;
-                    }    
-                </style>`).appendTo('body');
+                let styleTag = document.createElement('style');
+                styleTag.setAttribute('id', 'citation-saver-disable-text-transform');
+                styleTag.innerHTML = `* { text-transform: none!important; }`;
+                document.body.appendChild(styleTag);
             } else {
-                jQuery('#citation-saver-disable-text-transform').remove();
+                document.querySelector('#citation-saver-disable-text-transform').remove();
             }
         }
     },
@@ -117,7 +104,7 @@ const citationSaver = {
         },
         getFirstWords: (phrase, numWords) => { // Gets the first few words in a phrase
             try {
-                phrase = jQuery.trim(phrase);
+                phrase = phrase?.trim();
                 let expr = new RegExp('^([^ ]+\\s){' + numWords + '}', 'g');
                 let results = expr.exec(phrase);
                 if (results) {
@@ -128,7 +115,7 @@ const citationSaver = {
         },
         getLastWords: (phrase, numWords) => { // Gets the last few words in a phrase
             try {
-                phrase = jQuery.trim(phrase);
+                phrase = phrase?.trim();
                 let expr = new RegExp('((\\s([^\\s])+){' + numWords + '})$', 'g');
                 let results = expr.exec(phrase);
                 if (results) {
@@ -140,7 +127,7 @@ const citationSaver = {
         getAcronymSignature: text => { // Produces a string that serves as a signature representing the words in a phrase in a way that indicates world length. Example: "hello world!" -> "h4;w5"
             try {
                 let ret = '';
-                let words = jQuery.trim(citationSaver.utils.prunePhrase(text)).split(' ');
+                let words = citationSaver.utils.prunePhrase(text).trim().split(' ');
                 words.forEach(word => {
                     ret += ';' + word.charAt(0) + (word.length - 1);
                 });
@@ -206,6 +193,25 @@ const citationSaver = {
         }
     },
     dom: {
+        createElement: (tagName, attributes, innerHTML, appendTo) => {
+            let elt = document.createElement(tagName);
+            if (attributes) {
+                Object.keys(attributes).forEach(key => {
+                    elt.setAttribute(key, attributes[key]);
+                });
+            }
+            if (innerHTML) {
+                elt.innerHTML = innerHTML;
+            }
+            if (appendTo) {
+                if (typeof appendTo === 'string') {
+                    document.querySelector(appendTo)?.appendChild(elt);
+                } else {
+                    appendTo.appendChild(elt);                    
+                }
+            }
+            return elt;
+        },
         excludeNodeType: node => node.nodeType === 8, // Exclude COMMENT nodes
         getFragments: (results, elt) => { // Gets a flattened array of nodes contained in an element
             try {
@@ -347,7 +353,7 @@ const citationSaver = {
                         node: sel.focusNode,
                         offset: sel.focusOffset
                     },
-                    length: jQuery.trim(sel.toString()).length
+                    length: sel.toString().trim().length
                 };
 
                 // Select content based on the profile
@@ -366,7 +372,6 @@ const citationSaver = {
         restore: (profile, scrollIntoView, showNotification) => { // Tries to restore a selection based on a provided profile
             try {
                 let $containers = citationSaver.citation.getMatchingContainers(profile);
-
                 if (!$containers.length) {
                     return false;
                 }
@@ -384,6 +389,7 @@ const citationSaver = {
                         break;
                     }
                 }
+
                 // Try to identify the fragment that corresponds with the start of the phrase
                 text = '';
                 if (nodeRange[1] !== null) {
@@ -462,7 +468,10 @@ const citationSaver = {
                         if (scrollIntoView) {
                             // Make sure the content is visible by scrolling to it
                             window.setTimeout(() => {
-                                window.scrollTo(0, $(firstNode.parentNode).offset().top - ($(window).height() / 4));
+                                firstNode.parentNode?.scrollIntoView({
+                                    behavior: 'instant',
+                                    block: 'center'
+                                });
                             }, 1);
                         }
                         if (showNotification) {
@@ -480,20 +489,16 @@ const citationSaver = {
     notification: {
         show: msg => { // Shows a fleeting notification message
             try {
-                jQuery('#__citation-saver-notice-container').remove();
-
+                document.querySelector('#__citation-saver-notice-container')?.remove();
                 let minDuration = 1500;
                 let duration = Math.max(minDuration, msg.length * 50);
-
-                let $elt = jQuery(`<div id="__citation-saver-notice-container"><div id="__citation-saver-notice"><div>${msg}</div></div></div>`);
-    
-                $elt.appendTo('body');
+                let elt = citationSaver.dom.createElement('div', { id: '__citation-saver-notice-container' }, `<div id="__citation-saver-notice"><div>${msg}</div></div>`, document.body);
                 window.setTimeout(() => {
-                    $elt.addClass('__citation-saver-show');
+                    elt.classList.add('__citation-saver-show');
                     window.setTimeout(() => {
-                        $elt.removeClass('__citation-saver-show');
+                        elt.classList.remove('__citation-saver-show');
                         window.setTimeout(() => { // Remove element from DOM after a second
-                            $elt.remove();
+                            elt.remove();
                         }, 1000);
                     }, duration);
                 }, 1);
@@ -502,73 +507,76 @@ const citationSaver = {
     },
     modal: {
         close: callback => {
-            jQuery('#__citation-saver-modal-cover').remove();
+            document.querySelector('#__citation-saver-modal-cover')?.remove();
             if((typeof callback) == 'function') {
                 callback();
             }
         },
-        show: (url, callback) => { // Renders and shows a modal with results
+        show: async (url, callback) => { // Renders and shows a modal with results
             try {
-                let imagePath = 'images/get_started48.png';
-
+                let logoPath = chrome.runtime.getURL('images/get_started48.png');
+                let buyMeACoffeePath = chrome.runtime.getURL('images/buymeacoffee.png');
                 // Main structure
                 citationSaver.modal.close(callback);
-                let $modalCover = jQuery('<div id="__citation-saver-modal-cover"></div>');
-                let $modal = jQuery(`<div id="__citation-saver-modal" role="alert"><img id="__citation-saver-modal-logo" tabindex="1" src="../${imagePath}" alt="Citation Saver" /><div id="__citation-saver-modal-loading-content">Loading...</div><div id="__citation-saver-modal-main-content"><div id="__citation-saver-modal-label-intro" tabindex="2">${citationSaver.config.modal.introText}</div></div></div>`);
-    
-                // Ad unit
-                jQuery(`<div id="__citation-saver-modal-ad-placeholder" role="presentation"><div id="__citation-saver-modal-ad-title">Advertisement</div><iframe id="__citation-saver-modal-ad-unit" role="presentation" frameborder="0" src="${citationSaver.config.ad.url}"></iframe></div>`).appendTo($modal);
+                let modal = citationSaver.dom.createElement('div', { id: '__citation-saver-modal', role: 'alert' }, `<img id=-"__citation-savermodal-logo" tabindex="1" src="${logoPath}" alt="Citation Saver" /><div id="__citation-saver-modal-loading-content">Loading...</div><div id="__citation-saver-modal-main-content"><div id="__citation-saver-modal-label-intro" tabindex="2">${citationSaver.config.modal.introText}</div></div>`);
+                let modalCover = citationSaver.dom.createElement('div', { id: '__citation-saver-modal-cover' }, null);
+                citationSaver.dom.createElement('div', { id: '__citation-saver-modal-ad-placeholder', role: 'presentation' }, `<a href="https://buymeacoffee.com/johnpleung" target="_blank"><img src="${buyMeACoffeePath}"></a>`, modal);
     
                 // Event handlers to close the modal
-                $modalCover.append($modal).on('click', e => {
-                    if (e.target === $modalCover[0]) {
-                        citationSaver.modal.close(callback);
-                    }
-                }).appendTo('body').on('keydown', e => {
-                    // Esc key
-                    if (e.keyCode === 27) {
+                modalCover.addEventListener('click', e => {
+                    if (e.target === modalCover) {
                         citationSaver.modal.close(callback);
                     }
                 });
-
+                document.body.addEventListener('keydown', e => {
+                    if (e.key === 'Escape') {
+                        citationSaver.modal.close();
+                    }
+                });
+                modalCover.appendChild(modal);
+                document.body.appendChild(modalCover);
+                
                 // Render logo from bundled asset
                 if (chrome && chrome.extension) {
-                    jQuery('#__citation-saver-modal-logo').attr('src', chrome.extension.getURL(imagePath));
+                    document.querySelector('#__citation-saver-modal-logo')?.setAttribute('src', logoPath);
                 }
 
                 // Add link label and its event handlers
-                let $link = jQuery(`<div id="__citation-saver-modal-label-link" tabindex="3" role="button">${url}</div>`).on('click', () => {
-                    citationSaver.modal.copyToClipboard(url);
-                }).on('keypress', e => {
-                    if(e.keyCode === 13) {
-                        citationSaver.modal.copyToClipboard(url);
+                let link = citationSaver.dom.createElement('div', { id: '__citation-saver-modal-label-link', tabindex: 3, role: 'button' }, url, '#__citation-saver-modal-main-content');
+                link.addEventListener('click', async e => {
+                    await citationSaver.modal.copyToClipboard(url);
+                });
+                link.addEventListener('keypress', async e => {
+                    if (e.key === 'Enter') {
+                        await citationSaver.modal.copyToClipboard(url);
                     }
-                }).appendTo(jQuery('#__citation-saver-modal-main-content'));
+                });
 
                 // Add a Close button
-                jQuery(`<button id="__citation-saver-modal-close" tabindex="4">Close</button>`).on('click', () => {
+                let closeButton = citationSaver.dom.createElement('button', { id: '__citation-saver-modal-close', tabindex: 4 }, 'Close', '#__citation-saver-modal-main-content');
+                closeButton.addEventListener('click', async e => {
                     citationSaver.modal.close(callback);
-                }).appendTo(jQuery('#__citation-saver-modal-main-content'));
-
+                });
                 window.setTimeout(() => {
-                    $modalCover.addClass('__citation-saver-show'); // Initiates CSS transitions
-                    $modal.focus(); // For web accessibility
-    
+                    modalCover.classList.add('__citation-saver-show'); // Initiates CSS transitions
+                    link.focus(); // For web accessibility
                     // Wait a bit for the ad to render and be perceived before showing results
                     window.setTimeout(() => {
-                        jQuery('#__citation-saver-modal-cover').addClass('__citation-saver-loaded');
+                        document.querySelector('#__citation-saver-modal-cover')?.classList.add('__citation-saver-loaded');
                     }, 2500);
     
-                }, 1);
-            } catch (err) {}
+                }, 500);
+            } catch (err) {
+                alert(err.stack);
+            }
         },
         copyToClipboard: url => { // When user clicks link to copy to clipboard...
             try {
                 citationSaver.utils.sys.copyToClipboard(url); // TODO: Assuming operation was successful
-                jQuery('#__citation-saver-modal-label-intro').text(citationSaver.config.modal.copiedConfirmation);
+                document.querySelector('#__citation-saver-modal-label-intro').textContent = citationSaver.config.modal.copiedConfirmation;
                 window.setTimeout(() => {
                     // Wait 2 seconds, switch the text back to what it was
-                    jQuery('#__citation-saver-modal-label-intro').text(citationSaver.config.modal.introText);
+                    document.querySelector('#__citation-saver-modal-label-intro').textContent = citationSaver.config.modal.introText;
                 }, 2000);
             } catch (err) {}
         }
@@ -593,15 +601,15 @@ const citationSaver = {
                 } catch (err) {}
             }
         },
-        processSelection: () => { // Tries to produce a hash from the selected content
+        processSelection: async () => { // Tries to produce a hash from the selected content
             try {
-                if (jQuery('#__citation-saver-modal-cover').length) {
+                if (document.querySelector('#__citation-saver-modal-cover')) {
                     return false;
                 }
                 let profile = citationSaver.parse.getUniqueProfile();
                 if (profile) {
                     let url = citationSaver.utils.generateUrl(profile);
-                    citationSaver.modal.show(url, () => {
+                    await citationSaver.modal.show(url, () => {
                         citationSaver.citation.restore(profile, false, false);
                     });
                 } else {
