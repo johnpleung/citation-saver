@@ -221,7 +221,7 @@ const citationSaver = {
                     });
                     return results;
                 } else {
-                    if (!citationSaver.dom.excludeNodeType(elt) && jQuery.trim(elt.textContent)) {
+                    if (!citationSaver.dom.excludeNodeType(elt) && elt.textContent?.trim()) {
             
                         let shouldAppendSpace;
                         // Special case for <td>'s: Add a space character if it's the last node in a <td>, because otherwise you end up with "TD contentsome other words"
@@ -240,19 +240,55 @@ const citationSaver = {
             } catch (err) {}
             return results;
         },
-        dedupeOccurrences: $elts => { // Filters out ancestors of the actual elements we want (the ones with most hierarchical depth)
-            try {
-                return $elts.filter((i1, elt1) => {
-                    var isAncestorToAnotherItem = false;
-                    $elts.each(function (i2, elt2) {
-                        if (jQuery.contains(elt1, elt2)) {
-                            isAncestorToAnotherItem = true;
+        getHierarchyTree: elt => {
+            let ret = [];
+            let currentNode = elt;
+            while (true) {
+                currentNode = currentNode.parentNode;
+                if (currentNode) {
+                    ret.push(currentNode);
+                } else {
+                    break;
+                }
+            }
+            return ret;
+        },
+        dedupeOccurrences: elts => { // Filters out ancestors of the actual elements we want (the ones with most hierarchical depth)
+            let ret = [];
+            for (let elt1 of elts) {
+                let isUnique = true;
+                for (let elt2 of elts) {
+                    if (elt1 !== elt2) {
+                        let hierarchy = citationSaver.dom.getHierarchyTree(elt2);
+                        if (hierarchy.includes(elt1)) {
+                            isUnique = false;
+                            break;
                         }
-                    });
-                    return !isAncestorToAnotherItem;
-                });
-            } catch (err) {}
-            return $elts;
+                    }
+                }
+                if (isUnique) {
+                    ret.push(elt1);
+                }
+            }
+            return ret;
+        },
+        getElementsContainingPhrases: (excludedTags, phrases) => {
+            let elts = Array.from(document.querySelectorAll(`:not(${excludedTags})`));
+            elts = elts.filter(elt => {
+                for (let phrase of phrases) {
+                    if (!elt.textContent?.includes(phrase)) {
+                        return false;
+                    }
+                }
+                return true;
+            });
+            return elts.length ? elts : null;
+        },
+        setText: (selector, text) => {
+            let elt = document.querySelector(selector);
+            if (elt) {
+                elt.textContent = text;
+            }
         }
     },
     citation: {
@@ -260,42 +296,38 @@ const citationSaver = {
             try {
                 // Step 1: Find elements that contain the start and end phrases, regardless of the order in which the phrases appear
                 let excludedTags = 'HTML,HEAD,HEAD *,SCRIPT,STYLE,TEMPLATE';
-                let selector = `:not(${excludedTags}):visible`;
                 let searchFragments = [ profile.s, profile.e ];
                 if (profile.m) {
                     searchFragments.push(profile.m);
                 }
-                searchFragments.map(str => {
-                    selector += ':contains(' + jQuery.escapeSelector(str) + ')';
-                });
-
                 // Temporarily disable text-transform, which interferes
                 citationSaver.utils.toggleTextTransform(false);
-
-                let $containers = jQuery(selector);
-
-                // Step 2: Narrow down the list of elements to the ones that match the profile
-                if ($containers.length > 1) {
-                    $containers = $containers.filter((i, container) => {
-                        let textContent = citationSaver.utils.prunePhrase(container.innerText); // Using .innerText because it includes line breaks whereas textContent doesn't always seem to (observed on https://www.ncbi.nlm.nih.gov/pubmed/22760575)
-                        return citationSaver.parse.matchesText(textContent, profile);
+                let matchingElements = citationSaver.dom.getElementsContainingPhrases(excludedTags, searchFragments);
+                if (matchingElements?.length) {
+                    // Step 2: Narrow down the list of elements to the ones that are visible and that match the profile
+                    matchingElements = matchingElements.filter(elt => {
+                        if (elt.checkVisibility()) {
+                            let textContent = citationSaver.utils.prunePhrase(elt.innerText); // Using .innerText because it includes line breaks whereas textContent doesn't always seem to (observed on https://www.ncbi.nlm.nih.gov/pubmed/22760575)
+                            return citationSaver.parse.matchesText(textContent, profile);
+                        }
+                        return false;
                     });
-                    $containers = citationSaver.dom.dedupeOccurrences($containers);
+                    if (matchingElements.length) {
+                        matchingElements = citationSaver.dom.dedupeOccurrences(matchingElements);
+                    }
+                    return matchingElements.length ? matchingElements : null;
                 }
-                return $containers;
             } catch (err) {
-
             } finally {
                 // Re-enable text-transform (if applicable)
                 citationSaver.utils.toggleTextTransform(true);
             }
-            return jQuery([]);
         },
         getProfile: specificity => { // Produce a profile, of a certain specificity, based on the current selection
             try {
                 let excerptLength = specificity;
                 let acronymLength = specificity;
-                let selectedPhrase = jQuery.trim(window.getSelection().toString());
+                let selectedPhrase = window.getSelection().toString().trim();
 
                 // Break phrase into an array based on newlines/tabs
                 let delimiter = '📋💾'; // Assuming this is not present in the phrase...
@@ -314,13 +346,13 @@ const citationSaver = {
                     // If more than three lines, choose something somewhere toward the middle
                     let excerptIndex = Math.floor(selectedPhraseSplit.length / 2);
                     let excerptOffset = Math.ceil(0, Math.floor((selectedPhraseSplit[excerptIndex].length - excerptLength) / 2));
-                    profile.m = jQuery.trim(selectedPhraseSplit[excerptIndex].slice(excerptOffset, excerptOffset + excerptLength));
+                    profile.m = (selectedPhraseSplit[excerptIndex].slice(excerptOffset, excerptOffset + excerptLength)).trim();
                 } else if (selectedPhraseSplit.length === 2) {
                     // If there are two lines, choose from the longer of the two lines
                     if (selectedPhraseSplit[0].length > selectedPhraseSplit[1].length) {
-                        profile.m = jQuery.trim(selectedPhraseSplit[0].slice(-excerptLength));
+                        profile.m = (selectedPhraseSplit[0].slice(-excerptLength)).trim();
                     } else {
-                        profile.m = jQuery.trim(selectedPhraseSplit[1].slice(0, excerptLength));
+                        profile.m = (selectedPhraseSplit[1].slice(0, excerptLength)).trim();
                     }
                 } // If there's only one line, we don't need a middle phrase marker
 
@@ -573,10 +605,10 @@ const citationSaver = {
         copyToClipboard: url => { // When user clicks link to copy to clipboard...
             try {
                 citationSaver.utils.sys.copyToClipboard(url); // TODO: Assuming operation was successful
-                document.querySelector('#__citation-saver-modal-label-intro').textContent = citationSaver.config.modal.copiedConfirmation;
+                citationSaver.dom.setText('#__citation-saver-modal-label-intro', citationSaver.config.modal.copiedConfirmation);
                 window.setTimeout(() => {
                     // Wait 2 seconds, switch the text back to what it was
-                    document.querySelector('#__citation-saver-modal-label-intro').textContent = citationSaver.config.modal.introText;
+                    citationSaver.dom.setText('#__citation-saver-modal-label-intro', citationSaver.config.modal.introText);
                 }, 2000);
             } catch (err) {}
         }
