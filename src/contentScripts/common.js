@@ -85,16 +85,16 @@ class CitationSaver {
 
             // In order to make the hash as short as possible, we start with less specific markers and increment until we end up with a profile that is unique
             for (let i = CitationSaver.PROFILE_START_SPECIFICITY; i < CitationSaver.PROFILE_MAX_SPECIFICITY + 1; i++) {
-                profile = CitationSaver.getProfile(i);
+                profile = CitationSaver.getUnescapedProfile(i);
                 console.log(profile);
 
                 // See if this profile is unique
                 if (CitationSaver.validate(profile)) {
                     // If profile.m is not needed, discard so we end up with an even shorter hash
                     let profile2 = Object.assign({}, profile);
-                    if (profile2.m || profile2.mb) {
+                    if (profile2.m) {
                         delete profile2.m;
-                        delete profile2.mb;
+                        //delete profile2.mb;
                         if (CitationSaver.validate(profile2)) {
                             profile = profile2;
                         }
@@ -323,10 +323,6 @@ class CitationSaver {
 
     // Gets the elements that contain stuff that matches the profile provided
     static getMatchingContainers (profile) {
-        profile = JSON.parse(JSON.stringify(profile));
-        console.log('before 2', profile);
-        profile = CitationSaver.unescapeProfile(profile);
-        console.log('after 2', profile);
         try {
             // Step 1: Find elements that contain the start and end phrases, regardless of the order in which the phrases appear
             let excludedTags = 'HTML,HEAD,HEAD *,SCRIPT,STYLE,TEMPLATE';
@@ -360,7 +356,7 @@ class CitationSaver {
     }
 
     // Produce a profile, of a certain specificity, based on the current selection
-    static getProfile (specificity) {
+    static getUnescapedProfile (specificity) {
         try {
             let excerptLength = specificity;
             let acronymLength = specificity;
@@ -400,9 +396,7 @@ class CitationSaver {
             selectedPhrase = CitationSaver.prunePhrase(selectedPhrase);
             profile.a1 = CitationSaver.getAcronymSignature(CitationSaver.getFirstWords(selectedPhrase, acronymLength));
             profile.a2 = CitationSaver.getAcronymSignature(CitationSaver.getLastWords(selectedPhrase, acronymLength));
-        
-            // Escape profile in case anything is outside of Latin-1
-            return CitationSaver.escapeProfile(profile);
+            return profile;
         } catch (err) {}
         return null;
     }
@@ -503,11 +497,9 @@ class CitationSaver {
     }
 
     // Tries to restore a selection based on a provided profile
-    static restore (profile, scrollIntoView, showNotification) {
+    static restore (unescapedProfile, scrollIntoView, showNotification) {
         try {
-            console.log('before', profile);
-            profile = CitationSaver.unescapeProfile(profile);
-            console.log('after', profile);
+            let profile = unescapedProfile;
             let containers = CitationSaver.getMatchingContainers(profile);
             if (!containers?.length) {
                 return false;
@@ -725,9 +717,7 @@ class CitationSaver {
             let hash = window.decodeURI(window.location.hash.slice(1));
             try {
                 hash = CitationSaver.expandJSON(window.atob(hash));
-                console.log('hash', hash);
                 let profile = CitationSaver.unescapeProfile(JSON.parse(hash));
-                console.log('profile', profile);
                 // Integrity check
                 if (profile && profile.v && profile.s && profile.e && profile.a1 && profile.a2) {
                     // If this didn't work, try again in 3 seconds. This is a crappy workaround for SPAs.
