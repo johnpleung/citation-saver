@@ -50,6 +50,9 @@ Found a bug? Help make Citation Saver better by reporting the issue to citations
 - The version of Chrome you're running
 - A screenshot (optional but helpful)
 
+<br>
+<br>
+
 ## Privacy Policy
 
 I'm not collecting any data at all; the experience takes place entirely in your browser.
