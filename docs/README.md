@@ -49,3 +49,7 @@ Found a bug? Help make Citation Saver better by reporting the issue to citations
 - The content you're trying to cite
 - The version of Chrome you're running
 - A screenshot (optional but helpful)
+
+## Privacy Policy
+
+I'm not collecting any data at all; the experience takes place entirely in your browser.
