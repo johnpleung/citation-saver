@@ -2,6 +2,14 @@
 Color palette: ff8503, 8903ff, 03eeff
 */
 
+#__citation-saver-modal * {
+    filter: none;
+}
+
+#__citation-saver-modal img {
+    margin: auto;
+}
+
 #__citation-saver-modal-cover {
     background-color: rgba(0, 0, 0, .8);
     z-index: 9999999;
@@ -109,6 +117,7 @@ Color palette: ff8503, 8903ff, 03eeff
 #__citation-saver-modal-ad-placeholder img {
     border: 0;
     width: 230px;
+    margin: auto;
 }
 
 #__citation-saver-notice-container {
