@@ -20,12 +20,12 @@ class CitationSaver {
 
     // Removes quotation marks around property names and remove curly braces (in order to reduce size of hash)
     static reduceJSON (json) {
-        return json.replace(/(\")(\w{1,2})(\")\:/g, '$2\:').slice(1, -1);
+        return json.replace(/(\")(\w{1,3})(\")\:/g, '$2\:').slice(1, -1);
     }
 
     // Adds quotation marks back in (in order to properly parse JSON)
     static expandJSON (json) {
-        return '{' + (',' + json).replace(/\,(s|e|a1|a2|m|v)\:/g, '\,\"$1\"\:').slice(1) + '}';
+        return '{' + (',' + json).replace(/\,(s|sb|e|eb|a1|a1b|a2|a2b|m|mb|v)\:/g, '\,\"$1\"\:').slice(1) + '}';
     }
 
     // Generates a Citation Saver URL
@@ -36,9 +36,10 @@ class CitationSaver {
                 version = parseInt(chrome.runtime.getManifest().version); // Get major version
             }
             profile.v = version || 1; // Default to v1 if nothing
+            profile = CitationSaver.escapeProfile(profile);
             let hash = CitationSaver.reduceJSON(JSON.stringify(profile));
-            console.log(hash);
-            return window.location.origin + window.location.pathname + window.location.search + '#' + CitationSaver.bytesToBase64(hash);
+            console.log('hash!',hash);
+            return window.location.origin + window.location.pathname + window.location.search + '#' + window.btoa(hash);
         } catch (err) {
             console.log(err.stack);
         }
@@ -322,6 +323,10 @@ class CitationSaver {
 
     // Gets the elements that contain stuff that matches the profile provided
     static getMatchingContainers (profile) {
+        profile = JSON.parse(JSON.stringify(profile));
+        console.log('before 2', profile);
+        profile = CitationSaver.unescapeProfile(profile);
+        console.log('after 2', profile);
         try {
             // Step 1: Find elements that contain the start and end phrases, regardless of the order in which the phrases appear
             let excludedTags = 'HTML,HEAD,HEAD *,SCRIPT,STYLE,TEMPLATE';
@@ -331,6 +336,7 @@ class CitationSaver {
             }
             // Temporarily disable text-transform, which interferes
             CitationSaver.toggleTextTransform(false);
+            console.log('searchFragments', searchFragments);
             let matchingElements = CitationSaver.getElementsContainingPhrases(excludedTags, searchFragments);
             if (matchingElements?.length) {
                 // Step 2: Narrow down the list of elements to the ones that are visible and that match the profile
@@ -396,8 +402,7 @@ class CitationSaver {
             profile.a2 = CitationSaver.getAcronymSignature(CitationSaver.getLastWords(selectedPhrase, acronymLength));
         
             // Escape profile in case anything is outside of Latin-1
-            //return CitationSaver.escapeProfile(profile);
-            return profile;
+            return CitationSaver.escapeProfile(profile);
         } catch (err) {}
         return null;
     }
@@ -417,6 +422,19 @@ class CitationSaver {
             if (val && !CitationSaver.isLatin1(val)) {
                 profile[prop + 'b'] = CitationSaver.stringToBytes(val).toString();
                 delete profile[prop];
+            }
+        });
+        return profile;
+    }
+
+    static unescapeProfile (profile) {
+        const props = [ 's', 'e', 'm', 'a1', 'a2' ];
+        props.forEach(prop => {
+            let val = profile[prop + 'b'];
+            if (val) {
+                val = Uint8Array.from(val.split(','));
+                profile[prop] = CitationSaver.bytesToString(val).toString();
+                delete profile[prop + 'b'];
             }
         });
         return profile;
@@ -451,7 +469,7 @@ class CitationSaver {
     // Validates citation profile to make sure it's specific and produces correct results
     static validate (profile) {
         try {
-            if (CitationSaver.getMatchingContainers(profile).length !== 1) {
+            if (CitationSaver.getMatchingContainers(profile)?.length !== 1) {
                 return false;
             }
 
@@ -478,6 +496,7 @@ class CitationSaver {
                 return false;
             }
         } catch (err) {
+            console.log(err.stack);
             return false;
         }
         return true;
@@ -486,15 +505,18 @@ class CitationSaver {
     // Tries to restore a selection based on a provided profile
     static restore (profile, scrollIntoView, showNotification) {
         try {
-            let $containers = CitationSaver.getMatchingContainers(profile);
-            if (!$containers.length) {
+            console.log('before', profile);
+            profile = CitationSaver.unescapeProfile(profile);
+            console.log('after', profile);
+            let containers = CitationSaver.getMatchingContainers(profile);
+            if (!containers?.length) {
                 return false;
             }
 
             let text = '';
             let nodeRange = [null, null];
 
-            let fragments = CitationSaver.getFragments([], $containers[0]);
+            let fragments = CitationSaver.getFragments([], containers[0]);
 
             // Try to identify the fragment that corresponds with the end of the phrase
             for (let i = 0; i < fragments.length; i++) {
@@ -702,9 +724,10 @@ class CitationSaver {
         if (window.location.hash) {
             let hash = window.decodeURI(window.location.hash.slice(1));
             try {
-                hash = CitationSaver.expandJSON(CitationSaver.base64ToBytes(hash));
-                let profile = JSON.parse(hash);
-
+                hash = CitationSaver.expandJSON(window.atob(hash));
+                console.log('hash', hash);
+                let profile = CitationSaver.unescapeProfile(JSON.parse(hash));
+                console.log('profile', profile);
                 // Integrity check
                 if (profile && profile.v && profile.s && profile.e && profile.a1 && profile.a2) {
                     // If this didn't work, try again in 3 seconds. This is a crappy workaround for SPAs.
@@ -714,7 +737,9 @@ class CitationSaver {
                         }, 2000);
                     }
                 }
-            } catch (err) {}
+            } catch (err) {
+                console.log(err.stack);
+            }
         }
     }
 
