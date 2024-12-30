@@ -24,7 +24,7 @@ async function init () {
 			await chrome.scripting.executeScript({
 				target : { tabId },
 				func: async () => {
-					await citationSaver.main.processSelection();
+					await CitationSaver.processSelection();
 				}
 			});
 		}
@@ -60,7 +60,7 @@ async function injectContentScripts() {
 	if (tabId) {
 		let result = await chrome.scripting.executeScript({
 			target: { tabId },
-			func: () => typeof citationSaver !== 'undefined'
+			func: () => typeof CitationSaver !== 'undefined'
 		});
 		let alreadyInjected = result[0].result;
 		if (!alreadyInjected) {
