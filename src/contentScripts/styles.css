@@ -1,7 +1,5 @@
 /*
-
 Color palette: ff8503, 8903ff, 03eeff
-
 */
 
 #__citation-saver-modal-cover {
@@ -30,7 +28,6 @@ Color palette: ff8503, 8903ff, 03eeff
 }
 
 #__citation-saver-modal, #__citation-saver-notice {
-    /*background-color: #ff8503;*/
     background: rgb(255,133,3);
     background: linear-gradient(347deg, rgba(255,133,3,1) 0%, rgba(255,213,83,1) 100%);
     border-radius: 4px;
