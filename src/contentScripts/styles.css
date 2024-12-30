@@ -1,8 +1,14 @@
 /*
-
 Color palette: ff8503, 8903ff, 03eeff
-
 */
+
+#__citation-saver-modal * {
+    filter: none;
+}
+
+#__citation-saver-modal img {
+    margin: auto;
+}
 
 #__citation-saver-modal-cover {
     background-color: rgba(0, 0, 0, .8);
@@ -30,7 +36,6 @@ Color palette: ff8503, 8903ff, 03eeff
 }
 
 #__citation-saver-modal, #__citation-saver-notice {
-    /*background-color: #ff8503;*/
     background: rgb(255,133,3);
     background: linear-gradient(347deg, rgba(255,133,3,1) 0%, rgba(255,213,83,1) 100%);
     border-radius: 4px;
@@ -51,6 +56,7 @@ Color palette: ff8503, 8903ff, 03eeff
 #__citation-saver-modal-loading-content, #__citation-saver-modal-logo {
     opacity: 0;
     transition: opacity 2s;
+    margin: auto;
 }
 
 #__citation-saver-modal-cover.__citation-saver-show #__citation-saver-modal-loading-content, #__citation-saver-modal-cover.__citation-saver-show #__citation-saver-modal-logo {
@@ -108,16 +114,10 @@ Color palette: ff8503, 8903ff, 03eeff
     overflow: hidden;
 }
 
-#__citation-saver-modal-ad-title {
-    font-size: .7em;
-    text-transform: uppercase;
-    text-shadow: none;
-}
-
-#__citation-saver-modal-ad-unit {
-    margin-top: .7em;
-    width: 728px;
-    height: 90px;
+#__citation-saver-modal-ad-placeholder img {
+    border: 0;
+    width: 230px;
+    margin: auto;
 }
 
 #__citation-saver-notice-container {

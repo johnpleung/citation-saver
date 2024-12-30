@@ -35,7 +35,8 @@ Install it from the [Chrome Web Store](https://chrome.google.com/webstore/detail
 
 ## How to Support This Thing
 
-There's an innocuous ad that appears when you create a Citation Saver link. Click it if you're so inclined!
+[Buy me a coffee!](https://buymeacoffee.com/johnpleung)
+
 <br>
 <br>
 
@@ -48,7 +49,3 @@ Found a bug? Help make Citation Saver better by reporting the issue to citations
 - The content you're trying to cite
 - The version of Chrome you're running
 - A screenshot (optional but helpful)
-
-<br>
-<br>
-<div class="ad-unit"><div>Advertisement</div><iframe src="https://johnpleung.github.io/citation-saver-ad/" frameborder="0"></iframe></div>
