@@ -38,7 +38,6 @@ Install it from the [Chrome Web Store](https://chrome.google.com/webstore/detail
 [Buy me a coffee!](https://buymeacoffee.com/johnpleung)
 
 <br>
-<br>
 
 ## How To Report Problems With This Thing
 
@@ -50,7 +49,6 @@ Found a bug? Help make Citation Saver better by reporting the issue to citations
 - The version of Chrome you're running
 - A screenshot (optional but helpful)
 
-<br>
 <br>
 
 ## Privacy Policy
