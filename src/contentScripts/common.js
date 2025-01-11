@@ -396,7 +396,7 @@ class CitationSaver {
     }
 
     /**
-     * Sets the text content of the first element that matches the given selector
+     * Gets an array of elements, excluding those with the given tag names, containing the given phrases
      * 
      * @param {Array<string>} excludedTags
      * @param {Array<string>} phrases
